@@ -1,17 +1,12 @@
--- detikToFormatJam(x) adalah fungsi untuk mengubah bilangan integer (x)sebagai detik, menjadi string jam dengan format ”j:m:d”.
-detikToFormatJam :: Int -> String
-detikToFormatJam x = 
-    let j = x `div`3600
-        s = x  `mod`3600
-        m = s `div`60
-        d = s `mod`60
-    in 
-        show j++":"++show m ++":"++show d 
-
+-- wujudZatAir(x) melakukan pengecekan wujud zat dari air, berdasarkan suhu air x, dengan x (bilangan real) yang merupakan masukan ke fungsi
+wujudZatAir :: Double -> String
+wujudZatAir x 
+        |x > 0 = "Gas"
+        |x < 0 = "PADAT"
+        |x == 0 ="CAIR"
 -- TODO: realisasi Haskell disini
-main :: IO()
+main :: IO ()
 main = do
-    x <- readLn :: IO Int
-
--- memanggil fungsi detikToFormatJam
-    print (detikToFormatJam x)
+    x <- readLn :: IO Double
+-- memanggil fungsi wujUdZatAir
+    print (wujudZatAir x)

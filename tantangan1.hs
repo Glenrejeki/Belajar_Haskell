@@ -1,14 +1,22 @@
--- isJamValid(j, m, d) adalah fungi untuk melakukan pemeriksaan jika 3 bilangan integer j, m, d menyusun format jam yang valid.
--- Definisi jam yang valid adalah jika elemen jam (j) bernilai antara 0 sampai 23,
--- elemen menit (m) bernilai antara 0 sampai 59,
--- dan elemen detik (d) bernilai anatar 0 dan 59.
-isJamValid :: Int -> Int -> Int -> Bool
-isJamValid  j m d = (j > 0 && j <= 23)&&(m >= 0 && m <=59)&&(d>= 0 && d <= 59)
+-- min2(x, y) mengambil nilai terkecil dari 2 bilangan integer
+min2 :: Int -> Int -> Int
+min2 x y = if x < y
+            then x
+            else y
 -- TODO: realisasi Haskell disini
-main :: IO()
+-- min3(x, y, z) mengambil nilai terkecil dari 3 bilangan integer
+min3 :: Int -> Int -> Int -> Int
+min3 x y z = min2 (min2 x y)z
+-- TODO: realisasi Haskell disini
+-- min4(v, x, y, z) mengambil nilai terkecil dari 4 bilangan integer
+min4 :: Int -> Int -> Int -> Int -> Int
+min4 v x y z = min3 v x y
+-- TODO: realisasi Haskell disini
+main :: IO ()
 main = do
-    j <- readLn :: IO Int
-    m <- readLn :: IO Int
-    d <- readLn :: IO Int
--- memanggil fungsi isJamValid
-    print (isJamValid j m d)
+    v <- readLn :: IO Int
+    x <- readLn :: IO Int
+    y <- readLn :: IO Int
+    z <- readLn :: IO Int
+-- memanggil fungsi min4
+    print (min4 v x y z)
