@@ -1,69 +1,70 @@
-{- Nama : Glen Rejeki Sitorus
-   NIM : 11S23024
-   Prodi : Informatika
-   Kelas : IF 1
--}
+-- Nama = Glen Rejeki Sitorus
+-- NIM = 11S23024
+-- Prodi = Informatika
+--
+--
+--
+--                                 
 
+data Pecahan = Pecahan {a::Int, b::Int} deriving Show
 
+pemb::Pecahan ->Int
+pemb pecahan = a pecahan
 
-data Point = Point {x::Int, y::Int} deriving Show
+penny::Pecahan -> Int
+penny pecahan = b pecahan
 
-absis::Point -> Int
-absis point = x point 
+makeP:: Int->Int->Pecahan
+makeP a b = Pecahan{a=a, b=b}
 
-ordinat :: Point -> Int 
-ordinat point = y point
+addP::Pecahan -> Pecahan->Pecahan
+addP p1 p2 = makeP (pemb p1 *penny p2  + pemb p2 *penny p1 ) (penny p1 *penny p2)
 
-makePoint :: Int -> Int -> Point 
-makePoint x y = Point { x=x , y=y }
+subP::Pecahan -> Pecahan ->Pecahan
+subP p1 p2 = makeP (pemb p1 * penny p2 - pemb p2 * penny p1) (penny p1 * penny p2)
 
-isOrigin ::Point -> Bool
-isOrigin p = absis p == 0 && ordinat p == 0 
+mulP::Pecahan -> Pecahan ->Pecahan
+mulP p1 p2 = makeP (pemb p1 * pemb p2) (penny p1 * penny p2)
 
-kuadran :: Point -> String 
-kuadran p 
-    |absis p>0 && ordinat p>0 = "1"
-    |absis p<0 && ordinat p>0 = "2"
-    |absis p<0&& ordinat p<0 = "3"
-    |absis p > 0 && ordinat p<0 = "4"
-    |otherwise                  ="Lainnya"
+divP:: Pecahan -> Pecahan -> Pecahan 
+divP p1 p2 = makeP (pemb p1 * penny p2) (penny p1 * pemb p2 )
 
-isOnsbY :: Point -> Bool
-isOnsbY p = absis p ==0
-    
-isEqual :: Point -> Point -> Bool
-isEqual p1 p2 = x p1  ==x p2 && y p1 == y p2
+isEqP::Pecahan -> Pecahan -> Bool
+isEqP p1 p2 = pemb p1 * penny p2 == penny p1 * pemb p2
 
-translasisbY :: Point -> Int -> Point
-translasisbY p n = Point (x p) (y p+n)
+isLtP::Pecahan -> Pecahan -> Bool
+isLtP p1 p2  = pemb p1 * penny p2 < penny p1 * pemb p2
 
-jarak::Point -> Point -> Double
-jarak p1 p2 = sqrt (fromIntegral ((x p2 -x p1)^2+(y p2 -y p1)^2))
 
 main::IO()
-main = do
-    x1<-readLn ::IO Int
-    y1 <- readLn :: IO Int 
-    x2 <- readLn :: IO Int 
-    y2 <- readLn :: IO Int 
-    n <- readLn :: IO Int
+main = do 
+    pem1<-readLn::IO Int
+    pen1<- readLn :: IO Int
+    pem2 <- readLn :: IO Int
+    pen2 <- readLn :: IO Int
 
-    let p1= makePoint x1 y1
-        p2 = makePoint x2 y2 
+    let p1 = makeP pem1 pen1
+        p2 = makeP pem2 pen2
+    
+    putStrLn $ "p1 = " ++ show p1
+    putStrLn $ "p2 = " ++ show p2 
 
-    putStrLn $ "p1 = "++ show p1
-    putStrLn $ "p2 = "++ show p2
-    putStrLn $ "n = "++ show n
+    putStrLn $ "addP(p1, p2) = " ++ show (addP p1 p2)
 
-    putStrLn $ "isOnSbY(p1) = " ++show (isOnsbY p1)
-    putStrLn $ "isOnSbY(p2) = "++show (isOnsbY p2)
+    putStrLn $ "subP(p1, p2) = "++show (subP p1 p2)
 
-    putStrLn $ "isEqual(p1, p2) = "++show (isEqual p1 p2)
+    putStrLn $ "mulP(p1, p2) = "++show (mulP p1 p2)
+  
+    putStrLn $ "divP(p1, p2) = "++show (divP p1 p2)
 
-    putStrLn $ "translasiSbY(p1, n) = "++show (translasisbY p1 n)
-    putStrLn $ "translasiSbY(p2, n) = "++show (translasisbY p2 n)
+    putStrLn $ "isEqP(p1, p2) = "++show (isEqP p1 p2)
 
-    putStrLn $ "jarak(p1, p2) = "++ show (jarak p1 p2)
+    putStrLn $ "isLtP(p1, p2) = "++show (isLtP p1 p2)
+--
+--
+--
+--
+--
 --
 --
 --
