@@ -8,27 +8,30 @@
 
 data Pecahan = Pecahan {a::Int, b::Int} deriving Show
 
+-- Selektor
 pemb::Pecahan ->Int
 pemb pecahan = a pecahan
 
 penny::Pecahan -> Int
 penny pecahan = b pecahan
 
+-- Konstruktor
 makeP:: Int->Int->Pecahan
 makeP a b = Pecahan{a=a, b=b}
 
+-- Operator
 addP::Pecahan -> Pecahan->Pecahan
 addP p1 p2 = makeP (pemb p1 *penny p2  + pemb p2 *penny p1 ) (penny p1 *penny p2)
 
 subP::Pecahan -> Pecahan ->Pecahan
-subP p1 p2 = makeP (pemb p1 * penny p2 - pemb p2 * penny p1) (penny p1 * penny p2)
-
+subP p1 p2 = makeP (pemb p1 *penny p2  - pemb p2 *penny p1 ) (penny p1 *penny p2)
 mulP::Pecahan -> Pecahan ->Pecahan
 mulP p1 p2 = makeP (pemb p1 * pemb p2) (penny p1 * penny p2)
 
 divP:: Pecahan -> Pecahan -> Pecahan 
 divP p1 p2 = makeP (pemb p1 * penny p2) (penny p1 * pemb p2 )
 
+-- Predikat
 isEqP::Pecahan -> Pecahan -> Bool
 isEqP p1 p2 = pemb p1 * penny p2 == penny p1 * pemb p2
 
