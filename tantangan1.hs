@@ -2,121 +2,99 @@
 -- 11S23024
 -- Informatika
 
--- konstruktor
-konso :: Int -> [Int] -> [Int]
-konso e l = e : l
+--Defenisi
+data Tree t = Empty | Node t (Tree t) (Tree t) deriving (Show)
+
+-- Konstruktor 
+makeTree :: [a] -> Tree a
+makeTree [] = Empty
+makeTree (x:xs) = Node x (makeTree leftTail) (makeTree rightTail) 
+                where
+                  panjang = length xs
+                  mid = panjang  `div` 2
+                  (leftTail, rightTail) = splitAt (if panjang `mod` 2 == 0 then mid else mid+ 1)(xs)
+
+-- Selektor 
+akar :: Tree t -> t
+akar Empty = error "Pohon kosong tidak memiliki akar"
+akar (Node a _ _) = a
 
 
-konsb :: [Int] -> Int -> [Int]
-konsb l e = reverseList (konso e (reverseList l))
+left :: Tree t -> Tree t 
+left Empty = Empty 
+left (Node _ l _ ) = l
 
--- Selektor
-firstElmt :: [Int] -> Int
-firstElmt [] = error "List kosong"
-firstElmt (x:_) = x
+right :: Tree t -> Tree t 
+right Empty = Empty 
+right (Node _ _ r ) = r 
 
+-- Operator 
+nbElmt :: Tree t -> Int 
+nbElmt Empty  = 0 
+nbElmt (Node _ l r ) = 1 + nbElmt l + nbElmt r
 
-tailList :: [Int] -> [Int]
-tailList [] = []
-tailList (_:l) = l
+nbDaun :: Tree t -> Int 
+nbDaun Empty = 0
+nbDaun (Node _ Empty Empty) = 1  -- Jika node merupakan daun
+nbDaun (Node _ l r ) = nbDaun l + nbDaun r 
 
-lastElmt :: [Int] -> Int
-lastElmt l = firstElmt (reverseList l)
+nbEven :: Tree Int -> Int 
+nbEven Empty = 0
+nbEven (Node a l r ) 
+    | even  a = 1 +nbEven l + nbEven r
+    | otherwise = nbEven l + nbEven r 
 
+nbOdd :: Tree Int -> Int 
+nbOdd Empty = 0 
+nbOdd (Node a l r ) 
+    | odd a =  1 + nbOdd l + nbOdd r
+    | otherwise = nbOdd  l + nbOdd r 
 
-headList :: [Int] -> [Int]
-headList l = reverseList (tailList (reverseList l))
+-- Predikat 
+isTreeEmpty :: Tree a -> Bool 
+isTreeEmpty Empty = True 
+isTreeEmpty _ = False  -- Pohong /= kosong 
 
+isOneElemt :: Tree t -> Bool
+isOneElemt Empty = False 
+isOneElemt (Node a l r ) =  nbElmt (Node a l r) == 1 
 
-my_length::[Int]->Int
-my_length [] = 0
-my_length (_:xs)= 1+my_length xs 
+isUnerLeft :: Tree t -> Bool  
+isUnerLeft Empty = False
+isUnerLeft f 
+    | nbElmt f == 2 = True 
+    | otherwise = False 
 
-midList :: [Int] -> [Int]
-midList [] = []
-midList [x] = [x]
-midList l
-    | len `mod` 2 /= 0 = [elmtKeN l (midIndex + 1)]
-    | otherwise = [elmtKeN l midIndex, elmtKeN l (midIndex + 1)]
-    where len = nbElmt l
-          midIndex = len `div` 2
+isUnerRight :: Tree t -> Bool 
+isUnerRight p = False
 
+isBiner :: Tree t -> Bool 
+isBiner Empty = False 
+isBiner f 
+    | nbElmt f ==1 = False 
+    | nbElmt f==2 =False 
+    | nbElmt f > 2 = True
 
+isExitLeft :: Tree t -> Bool 
+isExitLeft Empty = False 
+isExitLeft (Node _ l _ ) = not (isTreeEmpty l)
+    where isTreeEmpty Empty = True 
+          isTreeEmpty _ = False
 
--- Operator
-nbElmt::[Int]->Int  
-nbElmt [] = 0
-nbElmt (_:list)= 1 + nbElmt list
+isExitRight :: Tree t -> Bool 
+isExitRight Empty = False 
+isExitRight (Node _ _ r ) = not (isTreeEmpty r)
+            where isTreeEmpty Empty = True
+                  isTreeEmpty _     = False 
 
-konkat::[Int]->[Int]->[Int] -- penggabungan 2 list
-konkat [] l2 = l2
-konkat (x:l1)l2= x:konkat l1 l2
+isExistN :: Tree Int -> Int -> Bool 
+isExistN Empty n = False 
+isExistN (Node a l r ) n
+        | a == n = True -- Kasus kalau nilai pada akar sama dengan n
+        | otherwise = isExistN l n || isExistN r n -- Teknik rekursi untuk mencari n apakah sama dengan sub pohon kiri atau kanan 
 
-reverseList::[Int]->[Int]
-reverseList [] = []
-reverseList(x:xs) = reverse (x:xs)
-
-maxList::[Int]->Int
-maxList [x] = x 
-maxList (x:xs) 
-        |x>maxTail = x 
-        |otherwise = maxTail
-        where maxTail = maxList xs
-
-elmtKeN::[Int]->Int -> Int
-elmtKeN list n 
-    |n<1 = error "harus lebih besar dari 0"
-    |null list = error "Kosong"
-    |length list < n = error "List gk mencukupi"
-    |otherwise = list !! (n-1)
-
-
-sumList::[Int]-> Int 
-sumList [] = 0
-sumList (x:xs) = x +sumList xs
-
-averageList :: [Int] -> Double
-averageList [] = 0
-averageList l = fromIntegral (sumList l) / fromIntegral (my_length l)
-
---Predikat
-isEmpty::[Int]->Bool
-isEmpty l = null l
-
-isOneElemt :: [Int] -> Bool
-isOneElemt l = nbElmt l == 1
-
-isEqual::[Int]->[Int]->Bool
-isEqual l1 l2 = l1==l2
-
-isMember::[Int]->Int->Bool
-isMember [] _ = False 
-isMember  (y:ys) x
-        |x==y = True
-        |otherwise = isMember ys x
-
-isFirst::[Int]->Int->Bool
-isFirst [] _ = False
-isFirst (y:_) x = x == y
-
-
-islast::[Int]->Int->Bool
-islast [] _ =False 
-islast  ys x = x == last ys
-
-isNbElemt::[Int]->[Int]->Bool
-isNbElemt l1 l2 = (nbElmt l1) == (nbElmt l2)
-
-isReverse::[Int]->[Int]->Bool
-isReverse l1 l2 = l2 == (reverseList l1)
-
-isXElmtKeN :: [Int] -> Int -> Int -> Bool
-isXElmtKeN _ _ n 
-    | n <= 0 = False
-isXElmtKeN (x:xs) e n 
-    | n == 1 = x == e
-    | otherwise = isXElmtKeN xs e (n - 1)
-isXElmtKeN [] _ _ = False
+isBalance :: Tree Int -> Bool 
+isBalance (Node _ l r ) = nbElmt l == nbElmt r 
 
 -- Fungsi lainnya
 getListFromInput :: Int -> IO [Int]
@@ -126,175 +104,70 @@ getListFromInput n = do
     xs <- getListFromInput (n - 1)
     return (x : xs)
 
-main::IO()
+showTree :: Show t => Tree t -> String
+showTree tree = unlines (showTree' tree)
+
+showTree' :: Show t => Tree t -> [String]
+showTree' Empty = ["_"]
+showTree' (Node a l r)
+    | isTreeEmpty l && isTreeEmpty r = [show a]
+    | otherwise = show a : zipWith (\l r -> l ++ " " ++ r)
+            (showTree' l)
+            (showTree' r)
+
+        
+
+main :: IO ()
 main = do 
-    totalList1 <- readLn :: IO Int
-    l1 <- getListFromInput totalList1
-    totalList2 <- readLn :: IO Int
-    l2 <- getListFromInput totalList2
-    e <- readLn :: IO Int
-    n1 <- readLn :: IO Int
-    n2 <- readLn :: IO Int
-    x1 <- readLn :: IO Int
-    x2 <- readLn :: IO Int
+    totalList <- readLn :: IO Int
+    list <- getListFromInput totalList
 
-    -- menggunakan konso dan konsb
-    let l1konso = konso e l1
-        l1konsb = konsb l1 e
-    let l2konso = konso e l2
-        l2konsb = konsb l2 e
+    let p = makeTree list
+    let emptyTree = isTreeEmpty p
 
-    putStrLn $ "e = " ++ show e
-    putStrLn $ "l1 = " ++ show l1
-    putStrLn $ "l1 (konso) = " ++ show l1konso
-    putStrLn $ "l1 (konsb) = " ++ show l1konsb
-    putStrLn $ "l2 = " ++ show l2
-    putStrLn $ "l2 (konso) = " ++ show l2konso
-    putStrLn $ "l2 (konsb) = " ++ show l2konsb
-    putStrLn $ "n1 = " ++ show n1
-    putStrLn $ "n2 = " ++ show n2
-    putStrLn $ "x1 = " ++ show x1
-    putStrLn $ "x2 = " ++ show x2
-    -- memanggil fungsi firstElmt(l)
-    putStrLn $ "firstElmt(l1) = " ++ show (firstElmt l1)
-    putStrLn $ "firstElmt(l2) = " ++ show (firstElmt l2)
-    -- memanggil fungsi tailList(l)
-    putStrLn $ "tailList(l1) = " ++ show (tailList l1)
-    putStrLn $ "tailList(l2) = " ++ show (tailList l2)
-    -- memanggil fungsi lastElmt(l)
-    putStrLn $ "lastElmt(l1) = " ++ show (lastElmt l1)
-    putStrLn $ "lastElmt(l2) = " ++ show (lastElmt l2)
-    -- memanggil fungsi headList(l)
-    putStrLn $ "headList(l1) = " ++ show (headList l1)
-    putStrLn $ "headList(l2) = " ++ show (headList l2)
-    -- memanggil fungsi midList(l)
-    putStrLn $ "midList(l1) = " ++ show (midList l1)
-    putStrLn $ "midList(l2) = " ++ show (midList l2)
-    -- memanggil fungsi nbElmt(l)
-    putStrLn $ "nbElmt(l1) = " ++ show (nbElmt l1)
-    putStrLn $ "nbElmt(l2) = " ++ show (nbElmt l2)
-    -- memanggil fungsi konkat(l1, l2)
-    putStrLn $ "konkat(l1, l2) = " ++ show (konkat l1 l2)
-    -- memanggil fungsi maxList(l)
-    putStrLn $ "maxList(l1) = " ++ show (maxList l1)
-    putStrLn $ "maxList(l2) = " ++ show (maxList l2)
+    if not emptyTree
+     then do
+        n <- readLn :: IO Int
+        putStrLn $ "n = " ++ show n
+        -- memanggil fungsi showTree(p)
+        putStrLn "tree p : "
+        putStrLn $ showTree p
+        -- memanggil fungsi akar(p)
+        putStrLn $ "akar(p) = " ++ show (akar p :: Int)
+        -- memanggil fungsi left(p)
+        putStrLn "left(p) ="
+        putStrLn $ showTree (left p)
+        -- memanggil fungsi right(p)
+        putStrLn "right(p) ="
+        putStrLn $ showTree (right p)
+        -- memanggil fungsi nbElmt(p)
+        putStrLn $ "nbElmt(p) = " ++ show (nbElmt p)
+        -- memanggil fungsi nbDaun(p)
+        putStrLn $ "nbDaun(p) = " ++ show (nbDaun p)
+        -- memanggil fungsi nbEven(p)
+        putStrLn $ "nbEven(p) = " ++ show (nbEven p)
+        -- memanggil fungsi nbOdd(p)
+        putStrLn $ "nbOdd(p) = " ++ show (nbOdd p)
 
-    -- memanggil fungsi elmtKeN(l, n)
-    putStrLn $ "elmtKeN(l1, n1) = " ++ show (elmtKeN l1 n1)
-    putStrLn $ "elmtKeN(l2, n2) = " ++ show (elmtKeN l2 n2)
-    -- memanggil fungsi sumList(l)
-    putStrLn $ "sumList(l1) = " ++ show (sumList l1)
-    putStrLn $ "sumList(l2) = " ++ show (sumList l2)
-    -- memanggil fungsi averageList(l)
-    putStrLn $ "averageList(l1) = " ++ show (averageList l1)
-    putStrLn $ "averageList(l2) = " ++ show (averageList l2)
-    -- memanggil fungsi isEqual(l1, l2)
-    putStrLn $ "isEqual(l1, l2) = " ++ show (isEqual l1 l2)
-    -- memanggil fungsi isEqual(l1, l2)
-    putStrLn $ "isEqual(l1, l2) = " ++ show (isEqual l1 l2)
-    -- memanggil fungsi isMember(l, x)
-    putStrLn $ "isMember(l1, x1) = " ++ show (isMember l1 x1)
-    putStrLn $ "isMember(l2, x2) = " ++ show (isMember l2 x2)
-    -- memanggil fungsi isFirst(l, x)
-    putStrLn $ "isFirst(l1, x1) = " ++ show (isFirst l1 x1)
-    putStrLn $ "isFirst(l2, x2) = " ++ show (isFirst l2 x2)
-    -- memanggil fungsi islast(l, x)
-    putStrLn $ "islast(l1, x1) = " ++ show (islast l1 x1)
-    putStrLn $ "islast(l2, x2) = " ++ show (islast l2 x2)
-    -- memanggil fungsi isNbElemt(l1, l2)
-    putStrLn $ "isNbElemt(l1, l2) = " ++ show (isNbElemt l1 l2)
-    -- memanggil fungsi isReverse(l1, l2)
-    putStrLn $ "isReverse(l1, l2) = " ++ show (isReverse l1 l2)
-    -- isXElmtKeN(l, x, n)
-    putStrLn $ "isXElmtKeN(l1, x1, n1) = " ++ show (isXElmtKeN l1 x1 n1)
-    putStrLn $ "isXElmtKeN(l2, x2, n2) = " ++ show (isXElmtKeN l2 x2 n2)
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
-    --
+        -- memanggil fungsi isTreeEmpty(p)
+        putStrLn $ "isTreeEmpty(p) = " ++ show (isTreeEmpty p)
+        -- memanggil fungsi isOneElemt(p)
+        putStrLn $ "isOneElemt(p) = " ++ show (isOneElemt p)
+        -- memanggil fungsi isUnerLeft(p)
+        putStrLn $ "isUnerLeft(p) = " ++ show (isUnerLeft p)
+        -- memanggil fungsi isUnerRight(p)
+        putStrLn $ "isUnerRight(p) = " ++ show (isUnerRight p)
+        -- memanggil fungsi isBiner(p)
+        putStrLn $ "isBiner(p) = " ++ show (isBiner p)
+        -- memanggil fungsi isExitLeft(p)
+        putStrLn $ "isExitLeft(p) = " ++ show (isExitLeft p)
+        -- memanggil fungsi isExitRight(p)
+        putStrLn $ "isExitRight(p) = " ++ show (isExitRight p)
+        -- memanggil fungsi isExistN(p, n)
+        putStrLn $ "isExistN(p, n) = " ++ show (isExistN p n)
+        -- memanggil fungsi isBalance(p)
+        putStrLn $ "isBalance(p) = " ++ show (isBalance p)
+
+
+        else putStrLn "Ini pohon kosong!"
+
